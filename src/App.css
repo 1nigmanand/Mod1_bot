@@ -285,9 +285,9 @@
 .messages-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   max-width: 100%;
-  padding-bottom: 1rem;
+  padding: 1rem 0;
   flex-grow: 1;
 }
 
@@ -307,38 +307,42 @@
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   width: 100%;
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Bot messages on the RIGHT side (like typical chatbots) */
+/* Bot messages on the LEFT side (traditional bot position) */
 .message-bubble.bot-message {
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+/* User/Student messages on the RIGHT side */
+.message-bubble.student-message {
   justify-content: flex-end;
   flex-direction: row-reverse;
 }
 
-/* User/Student messages on the LEFT side */
-.message-bubble.student-message {
-  justify-content: flex-start;
-}
-
 .message-content {
-  max-width: 70%;
-  min-width: 180px;
+  max-width: 75%;
+  min-width: 200px;
   border-radius: 18px;
   padding: 1rem 1.25rem;
   position: relative;
   word-wrap: break-word;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 .bot-message .message-content {
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  color: #374151;
-  border-bottom-right-radius: 6px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 3px 15px rgba(102, 126, 234, 0.1);
+  background: #ffffff;
+  color: #1f2937;
+  border-bottom-left-radius: 6px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Ensure all text inside bot messages is dark */
@@ -359,26 +363,29 @@
 }
 
 .student-message .message-content {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: white;
-  border-bottom-left-radius: 6px;
-  box-shadow: 0 3px 15px rgba(59, 130, 246, 0.2);
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
 }
 
 .message-text {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 0.5rem;
   font-weight: 400;
+  color: inherit;
 }
 
 /* Enhanced HTML content in messages */
 .message-text .html-content {
   line-height: 1.7;
+  color: inherit;
 }
 
 .message-text .plain-text {
   line-height: 1.6;
+  color: inherit;
 }
 
 .message-timestamp {
@@ -400,16 +407,16 @@
 
 /* Enhanced Avatars for Chat Interface */
 .bot-avatar, .student-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   flex-shrink: 0;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
   border: 2px solid white;
 }
 
