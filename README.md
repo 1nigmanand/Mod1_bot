@@ -7,66 +7,65 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+# 🧮 Numbers Tutor - AI-Powered Learning Bot
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+An intelligent tutoring system powered by Google Gemini AI that provides personalized learning experiences for number systems and computer science fundamentals.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ✨ Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 🤖 **LLM-Powered Conversations**
+- **Every user response** is processed through Google Gemini AI
+- **Intelligent context awareness** - AI understands conversation history
+- **Personalized responses** based on current lesson step and student progress
+- **Smart lesson progression** with AI-guided interactions
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 💬 **WhatsApp-Style Chat Interface**
+- Bot messages on the LEFT (gray background)
+- User messages on the RIGHT (blue background)
+- Perfect color contrast and readability
+- Smooth scrolling and modern UI
+
+### 📚 **Intelligent Learning System**
+- Interactive lessons on number systems (binary, decimal, hexadecimal)
+- AI evaluation of student answers with detailed feedback
+- Adaptive tutoring mode for struggling concepts
+- Conversation summarization for context retention
+
+### 🧠 **Advanced AI Features**
+- Context-aware question answering
+- Off-script question handling
+- Intelligent lesson flow management
+- Real-time student progress evaluation
+
+## 🚀 **How It Works**
+
+1. **User sends a message** → Added to conversation history
+2. **LLM processes response** → Analyzes context, current lesson step, and conversation history
+3. **AI generates intelligent reply** → Contextual, educational, and encouraging
+4. **Smart progression** → AI decides when to advance lessons or provide additional help
+
+### **LLM Integration Details:**
+```typescript
+// Every user message goes through this enhanced flow:
+handleStudentMessage: async (message: string) => {
+  // 1. Add user message to conversation
+  // 2. Prepare context (current step + conversation history)
+  // 3. Send to Gemini AI with intelligent prompting
+  // 4. Process AI response and determine next action
+  // 5. Auto-advance or provide additional support as needed
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ **Tech Stack**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Frontend**: React 19, TypeScript, Vite
+- **State Management**: Zustand with persistence
+- **AI Integration**: Google Gemini AI
+- **Backend**: Express.js serverless functions
+- **Deployment**: Vercel
+- **Styling**: Modern CSS with chat-app aesthetics
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📁 **Project Structure**
 
 # 🧮 Numbers Tutor - Gemini-Powered Learning Bot
 

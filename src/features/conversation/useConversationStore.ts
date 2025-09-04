@@ -552,59 +552,117 @@ export const useConversationStore = create<ConversationStore>()(
         },
         // Handle both lesson progression and off-script questions
         handleStudentMessage: async (message: string) => {
-          const { currentStep, tutoringMode } = get();
+          const { currentStep, tutoringMode, messages } = get();
           
-          // Check if we're in tutoring mode
-          if (tutoringMode && tutoringMode.isActive) {
-            await get().handleTutoringResponse(message);
-            return;
-          }
-          
-          // First, add the student message
-          get().addMessage('student', message);
-          
-          // Check if this is an expected lesson response
-          if (currentStep) {
-            const lowerMessage = message.toLowerCase().trim();
-            const expectedResponses = [
-              'continue', 'next', 'got it', 'i understand', 'tell me more', 'yes', 'ok', 'okay'
-            ];
+          try {
+            get().setLoading(true);
+            get().setError(null);
             
-            // If it's a simple continuation response, proceed with lesson
-            if (expectedResponses.includes(lowerMessage)) {
-              if (currentStep.type === 'bot') {
-                setTimeout(() => {
-                  get().nextStep();
-                }, 1000);
+            // First, add the student message
+            get().addMessage('student', message);
+            
+            // Check if we're in tutoring mode
+            if (tutoringMode && tutoringMode.isActive) {
+              await get().handleTutoringResponse(message);
+              return;
+            }
+            
+            // Prepare conversation context for LLM
+            const llmContext = {
+              currentStep: currentStep || undefined,
+              previousMessages: messages.slice(-10),
+              studentProfile: undefined // Can be enhanced later
+            };
+            
+            // Send user response to LLM for intelligent processing
+            let aiResponse;
+            
+            if (currentStep) {
+              // Context-aware response based on current step
+              const prompt = `
+                Current lesson step: ${currentStep.type} - "${currentStep.content}"
+                Student response: "${message}"
+                Recent conversation: ${JSON.stringify(messages.slice(-5).map(m => ({role: m.role, text: m.text})))}
+                
+                Analyze the student's response and provide an appropriate educational response:
+                1. If it's a simple continuation (like "continue", "ok", "got it"), respond encouragingly and briefly
+                2. If it's a question related to the current lesson, answer it educationally
+                3. If it's an answer to a quiz/question, evaluate it and provide feedback
+                4. If it's off-topic, gently guide back to the lesson
+                5. Keep responses conversational and encouraging
+                6. Always end with guidance on next steps
+                
+                Respond as a helpful AI tutor in a conversational tone.
+              `;
+              
+              aiResponse = await geminiClient.askGemini({
+                prompt,
+                context: llmContext
+              });
+            } else {
+              // General conversation without specific step context
+              const prompt = `
+                Student message: "${message}"
+                Lesson context: ${get().getLessonContext()}
+                Recent conversation: ${JSON.stringify(messages.slice(-3).map(m => ({role: m.role, text: m.text})))}
+                
+                Respond as a helpful AI tutor. Be encouraging, educational, and conversational.
+                If the student seems ready to continue learning, guide them forward.
+              `;
+              
+              aiResponse = await geminiClient.askGemini({
+                prompt,
+                context: llmContext
+              });
+            }
+            
+            // Process the AI response and determine next action
+            const responseText = aiResponse.text || "I understand what you're saying. Let's continue with our lesson!";
+            
+            setTimeout(() => {
+              get().addMessage('bot', responseText);
+              get().setLoading(false);
+              
+              // Smart lesson progression based on context
+              if (currentStep) {
+                const lowerMessage = message.toLowerCase().trim();
+                const continuationWords = ['continue', 'next', 'got it', 'understand', 'yes', 'ok', 'okay'];
+                
+                // Auto-advance if it's a simple continuation and current step is 'bot' type
+                if (currentStep.type === 'bot' && 
+                    (continuationWords.some(word => lowerMessage.includes(word)) || 
+                     lowerMessage.length < 20)) {
+                  setTimeout(() => {
+                    get().nextStep();
+                  }, 2000);
+                }
+                
+                // Handle quiz/question responses with AI evaluation
+                if ((currentStep.type === 'quiz' || currentStep.type === 'question') && 
+                    !continuationWords.includes(lowerMessage)) {
+                  // Let the AI response handle the evaluation
+                  // You can implement more sophisticated evaluation here
+                }
+                
+                // Handle reflection responses
+                if (currentStep.type === 'reflection') {
+                  setTimeout(() => {
+                    get().nextStep();
+                  }, 2000);
+                }
               }
-              return;
-            }
+            }, 1000);
             
-            // If it's an answer to a question/quiz, handle it normally
-            if (currentStep.type === 'question' && currentStep.options) {
-              const matchingOption = currentStep.options.find(option => 
-                option.toLowerCase().includes(lowerMessage) || 
-                lowerMessage.includes(option.toLowerCase())
-              );
-              if (matchingOption) {
-                get().submitAnswer(matchingOption);
-                return;
-              }
-            }
+          } catch (error) {
+            console.error('Error processing student message:', error);
+            get().setLoading(false);
+            get().setError('Sorry, I had trouble processing your message. Please try again.');
             
-            if (currentStep.type === 'quiz' && currentStep.answer) {
-              get().submitAnswer(message);
-              return;
-            }
-            
-            if (currentStep.type === 'reflection') {
-              get().addReflection(message);
-              return;
-            }
+            // Fallback response
+            setTimeout(() => {
+              get().addMessage('bot', "I'm having trouble processing that right now, but let's continue with our lesson!");
+            }, 1000);
           }
-          
-          // If we reach here, it's likely an off-script question
-          await get().askOffScriptQuestion(message);
         },
 
         // Handle questions outside the lesson sequence using Gemini AI
