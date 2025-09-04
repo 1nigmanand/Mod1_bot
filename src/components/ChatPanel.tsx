@@ -29,10 +29,16 @@ const ChatPanel: React.FC = () => {
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'end'
-      });
+      // Use timeout to ensure DOM is updated
+      const timeoutId = setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest'
+        });
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [messages]);
 
@@ -40,8 +46,14 @@ const ChatPanel: React.FC = () => {
   useEffect(() => {
     if (chatContainerRef.current) {
       const container = chatContainerRef.current;
+      // Force scroll to bottom for better UX
       const shouldScrollToBottom = container.scrollHeight > container.clientHeight;
       container.setAttribute('data-scroll', shouldScrollToBottom ? 'top' : 'bottom');
+      
+      // Ensure container can scroll
+      if (shouldScrollToBottom) {
+        container.scrollTop = container.scrollHeight;
+      }
     }
   }, [messages]);
 
