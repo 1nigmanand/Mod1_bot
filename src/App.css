@@ -319,10 +319,10 @@
   flex-direction: row;
 }
 
-/* User/Student messages on the RIGHT side (like WhatsApp/Telegram) */
+/* User/Student messages on the RIGHT side (like WhatsApp/Telegram) */  
 .message-bubble.student-message {
   justify-content: flex-end;
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .message-content {

@@ -30,15 +30,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   
   return (
     <div className={`message-bubble ${isBot ? 'bot-message' : 'student-message'}`}>
-      {/* Avatar - positioned correctly for each message type */}
+      {/* Avatar for bot messages (LEFT side) */}
       {isBot && (
         <div className="bot-avatar">
           🤖
-        </div>
-      )}
-      {!isBot && (
-        <div className="student-avatar">
-          👤
         </div>
       )}
       
@@ -60,6 +55,13 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
           {formatTimestamp(message.timestamp)}
         </div>
       </div>
+      
+      {/* Avatar for student messages (RIGHT side) */}
+      {!isBot && (
+        <div className="student-avatar">
+          👤
+        </div>
+      )}
     </div>
   );
 };
