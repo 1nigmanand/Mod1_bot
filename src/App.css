@@ -313,13 +313,13 @@
   visibility: visible;
 }
 
-/* Bot messages on the LEFT side (traditional bot position) */
+/* Bot messages on the LEFT side (like WhatsApp/Telegram) */
 .message-bubble.bot-message {
   justify-content: flex-start;
   flex-direction: row;
 }
 
-/* User/Student messages on the RIGHT side */
+/* User/Student messages on the RIGHT side (like WhatsApp/Telegram) */
 .message-bubble.student-message {
   justify-content: flex-end;
   flex-direction: row-reverse;
@@ -338,14 +338,14 @@
 }
 
 .bot-message .message-content {
-  background: #ffffff;
-  color: #1f2937;
+  background: #f1f1f1;
+  color: #000000;
   border-bottom-left-radius: 6px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Ensure all text inside bot messages is dark */
+/* Ensure all text inside bot messages is dark and readable */
 .bot-message .message-content *,
 .bot-message .message-content .html-content *,
 .bot-message .message-text,
@@ -359,14 +359,25 @@
 .bot-message .message-content span,
 .bot-message .message-content div,
 .bot-message .message-content li {
-  color: #374151 !important;
+  color: #000000 !important;
 }
 
 .student-message .message-content {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
+  background: #007bff;
+  color: #ffffff;
   border-bottom-right-radius: 6px;
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+  border: none;
+}
+
+/* Ensure all text inside student messages is white */
+.student-message .message-content *,
+.student-message .message-content .html-content *,
+.student-message .message-text,
+.student-message .message-content p,
+.student-message .message-content span,
+.student-message .message-content div {
+  color: #ffffff !important;
 }
 
 .message-text {
