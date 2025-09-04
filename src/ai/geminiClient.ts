@@ -316,7 +316,7 @@ Format feedback with beautiful HTML styling using warm colors and DARK TEXT for 
         const jsonMatch = response.text.match(/\{[\s\S]*\}/);
         const jsonString = jsonMatch ? jsonMatch[0] : response.text;
         result = JSON.parse(jsonString);
-      } catch (parseError) {
+      } catch {
         console.warn('Failed to parse AI evaluation response, providing fallback');
         // Fallback evaluation based on simple text analysis
         const isCorrect = correctAnswer ? 

@@ -20,13 +20,23 @@ const InteractiveCanvas: React.FC = () => {
   const [userInput, setUserInput] = useState('');
 
   const handleAnswerSubmit = (answer: string) => {
-    submitAnswer(answer);
-    setUserInput('');
+    try {
+      submitAnswer(answer);
+      setUserInput('');
+    } catch (error) {
+      console.error('Failed to submit answer:', error);
+      setUserInput('');
+    }
   };
 
   const handleReflectionSubmit = (reflection: string) => {
-    addReflection(reflection);
-    setUserInput('');
+    try {
+      addReflection(reflection);
+      setUserInput('');
+    } catch (error) {
+      console.error('Failed to submit reflection:', error);
+      setUserInput('');
+    }
   };
 
   const handleManualInput = (e: React.FormEvent) => {

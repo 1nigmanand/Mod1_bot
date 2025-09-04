@@ -153,19 +153,30 @@ export const useConversationStore = create<ConversationStore>()(
             stepId,
           };
 
-          set((state) => ({
-            ...state,
-            messages: [...state.messages, newMessage],
-          }));
+          set((state) => {
+            // Limit messages to prevent memory issues (keep last 50 messages)
+            const maxMessages = 50;
+            let updatedMessages = [...state.messages, newMessage];
+            
+            if (updatedMessages.length > maxMessages) {
+              // Keep first message (lesson intro) and last 49 messages
+              updatedMessages = [updatedMessages[0], ...updatedMessages.slice(-49)];
+            }
 
-          // Trigger conversation summary update after every few messages
+            return {
+              ...state,
+              messages: updatedMessages,
+            };
+          });
+
+          // Trigger conversation summary update after every 6 messages (reduced frequency)
           const messageCount = get().messages.length + 1;
-          if (messageCount % 4 === 0) { // Update summary every 4 messages
+          if (messageCount % 6 === 0) { // Reduced from every 4 to every 6 messages
             setTimeout(() => {
               get().updateConversationSummary().catch(error => {
                 console.warn('Failed to update conversation summary:', error);
               });
-            }, 1000); // Delay to avoid overwhelming the API
+            }, 2000); // Increased delay to reduce API pressure
           }
         },
 
@@ -699,6 +710,13 @@ export const useConversationStore = create<ConversationStore>()(
 
         // Conversation Context Management
         updateConversationSummary: async () => {
+          // Prevent concurrent summary updates
+          const state = get();
+          if (state.isLoading) {
+            console.log('Skipping summary update - already loading');
+            return;
+          }
+
           try {
             const { messages, currentStep, conversationSummary } = get();
             
@@ -798,7 +816,7 @@ export const useConversationStore = create<ConversationStore>()(
         // Handle Date object serialization in the onRehydrateStorage callback
         onRehydrateStorage: () => (state) => {
           if (state?.messages) {
-            state.messages = state.messages.map((msg: any) => ({
+            state.messages = state.messages.map((msg: Message) => ({
               ...msg,
               timestamp: typeof msg.timestamp === 'string' ? new Date(msg.timestamp) : msg.timestamp
             }));
@@ -811,7 +829,7 @@ export const useConversationStore = create<ConversationStore>()(
               state.progress.lastUpdateTime = new Date(state.progress.lastUpdateTime);
             }
             if (state.progress.answers) {
-              state.progress.answers = state.progress.answers.map((answer: any) => ({
+              state.progress.answers = state.progress.answers.map((answer: StudentAnswer) => ({
                 ...answer,
                 timestamp: typeof answer.timestamp === 'string' ? new Date(answer.timestamp) : answer.timestamp
               }));

@@ -23,7 +23,8 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     success: true, 
     message: 'Server is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    apiKeyConfigured: !!process.env.GEMINI_API_KEY
   });
 });
 

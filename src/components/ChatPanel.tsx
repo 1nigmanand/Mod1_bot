@@ -46,15 +46,27 @@ const ChatPanel: React.FC = () => {
   }, [messages]);
 
   const handleQuickResponse = async (response: string) => {
-    await handleStudentMessage(response);
-    setUserInput('');
+    try {
+      await handleStudentMessage(response);
+      setUserInput('');
+    } catch (error) {
+      console.error('Failed to handle quick response:', error);
+      // Error is handled by the store, just clear input
+      setUserInput('');
+    }
   };
 
   const handleManualInput = async (e: React.FormEvent) => {
     e.preventDefault();
     if (userInput.trim()) {
-      await handleStudentMessage(userInput.trim());
-      setUserInput('');
+      try {
+        await handleStudentMessage(userInput.trim());
+        setUserInput('');
+      } catch (error) {
+        console.error('Failed to handle manual input:', error);
+        // Error is handled by the store, just clear input
+        setUserInput('');
+      }
     }
   };
 
